@@ -5,6 +5,7 @@
 
 #define PULSE_TOO_SHORT_ERROR_FLAG ( 1 << 0 )
 #define PULSE_TOO_LONG_ERROR_FLAG ( 1 << 1 )
+#define TIMEOUT_ERROR_FLAG ( 1 << 2 )
 
 class PWMSerialAnalyzer;
 class PWMSerialAnalyzerSettings;

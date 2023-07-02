@@ -43,7 +43,6 @@ class PWMSerialAnalyzer : public Analyzer2
 
     BitState mShort;
     BitState mLong;
-
 #pragma warning( pop )
 };
 

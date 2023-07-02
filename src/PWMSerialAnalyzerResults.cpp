@@ -31,20 +31,26 @@ void PWMSerialAnalyzerResults::GenerateBubbleText( U64 frame_index, Channel& /*c
     if( ( frame.mFlags & PULSE_TOO_LONG_ERROR_FLAG ) != 0 )
         pulse_too_long = true;
 
+    bool timeout = false;
+    if( ( frame.mFlags & TIMEOUT_ERROR_FLAG ) != 0 )
+        timeout = true;
+
     char number_str[ 128 ];
     AnalyzerHelpers::GetNumberString( frame.mData1, display_base, 1, number_str, 128 );
 
     char result_str[ 128 ];
 
     // normal case:
-    if( ( pulse_too_long == true ) || ( pulse_too_short == true ) )
+    if( timeout || pulse_too_long || pulse_too_short )
     {
         AddResultString( "!" );
 
         snprintf( result_str, sizeof( result_str ), "%s (error)", number_str );
         AddResultString( result_str );
 
-        if( pulse_too_long == true )
+        if ( timeout == true )
+            snprintf( result_str, sizeof( result_str ), "%s (inter-bit timeout)", number_str );
+        else if( pulse_too_long == true )
             snprintf( result_str, sizeof( result_str ), "%s (pulse too long)", number_str );
         else if( pulse_too_short == true )
             snprintf( result_str, sizeof( result_str ), "%s (pulse too short)", number_str );
@@ -68,7 +74,7 @@ void PWMSerialAnalyzerResults::GenerateExportFile( const char* file, DisplayBase
     void* f = AnalyzerHelpers::StartFile( file );
 
     // Normal case -- not MP mode.
-    ss << "Time [s],Value,Pulse too long error,Pulse too short error" << std::endl;
+    ss << "Time [s],Value,Inter-bit timeout error,Pulse too long error,Pulse too short error" << std::endl;
 
     for( U32 i = 0; i < num_frames; i++ )
     {
@@ -84,10 +90,17 @@ void PWMSerialAnalyzerResults::GenerateExportFile( const char* file, DisplayBase
 
         ss << time_str << "," << number_str;
 
+        ss << ",";
+
+        if( ( frame.mFlags & TIMEOUT_ERROR_FLAG ) != 0 )
+            ss << "Error";
+
+        ss << ",";
+
         if( ( frame.mFlags & PULSE_TOO_LONG_ERROR_FLAG ) != 0 )
-            ss << ",Error,";
-        else
-            ss << ",,";
+            ss << "Error";
+
+        ss << ",";
 
         if( ( frame.mFlags & PULSE_TOO_SHORT_ERROR_FLAG ) != 0 )
             ss << "Error";
@@ -122,15 +135,21 @@ void PWMSerialAnalyzerResults::GenerateFrameTabularText( U64 frame_index, Displa
     if( ( frame.mFlags & PULSE_TOO_LONG_ERROR_FLAG ) != 0 )
         pulse_too_long = true;
 
+    bool timeout = false;
+    if( ( frame.mFlags & TIMEOUT_ERROR_FLAG ) != 0 )
+        timeout = true;
+
     char number_str[ 128 ];
     AnalyzerHelpers::GetNumberString( frame.mData1, display_base, 1, number_str, 128 );
 
     char result_str[ 128 ];
 
     // normal case:
-    if( ( pulse_too_long == true ) || ( pulse_too_short == true ) )
+    if( ( pulse_too_long == true ) || ( pulse_too_short == true ) || (timeout == true) )
     {
-        if( pulse_too_long == true )
+        if( timeout == true )
+            snprintf( result_str, sizeof( result_str ), "%s (timeout)", number_str);
+        else if( pulse_too_long == true )
             snprintf( result_str, sizeof( result_str ), "%s (pulse too long)", number_str );
         else if( pulse_too_short == true )
             snprintf( result_str, sizeof( result_str ), "%s (pulse too short)", number_str );
