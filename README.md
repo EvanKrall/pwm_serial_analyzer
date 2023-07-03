@@ -1,6 +1,13 @@
-# Saleae PWM Serial Analyzer
+# PWM Serial Analyzer
 
-Saleae PWM Serial Analyzer
+PWM Serial Analyzer plugin for Saleae Logic.
+
+This can decode simple serial protocols where there is a pulse per bit, and the width of the pulse encodes the value of the bit.
+Some example protocols that use this encoding:
+
+- Texas Instruments HDQ, used on their battery monitor ICs
+- Dallas 1-Wire
+- Various [RF-controlled power outlets](https://github.com/sui77/rc-switch/wiki/KnowHow_LineCoding) and [other 433 MHz devices](https://triq.org/rtl_433/PULSE_FORMATS.html#pwm-%E2%80%94-pulse-width-modulation)
 
 ## Getting Started
 
@@ -113,8 +120,8 @@ For debug and release builds, respectively.
 
 | Property | Type | Description |
 | :--- | :--- | :--- |
-| `bit` | int | Each bit, 0 or 1 |
-| `error` | str | (optional) Present if an error was detected when decoding this bit |
+| `data` | byte array | The bits of the decoded transmission are stored in this array with the most significant bits first. |
+| `error` | str | (optional) Present if an error was detected when decoding this transmission |
 
 A single bit
 
