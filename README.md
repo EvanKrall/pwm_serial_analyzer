@@ -3,11 +3,12 @@
 PWM Serial Analyzer plugin for Saleae Logic.
 
 This can decode simple serial protocols where there is a pulse per bit, and the width of the pulse encodes the value of the bit.
-Some example protocols that use this encoding:
+Some example protocols/devices that use this encoding:
 
 - Texas Instruments HDQ, used on their battery monitor ICs
 - Dallas 1-Wire
 - Various [RF-controlled power outlets](https://github.com/sui77/rc-switch/wiki/KnowHow_LineCoding) and [other 433 MHz devices](https://triq.org/rtl_433/PULSE_FORMATS.html#pwm-%E2%80%94-pulse-width-modulation)
+- WS2812 and similar addressable LED strips
 
 ## Getting Started
 
